@@ -8,8 +8,19 @@
 
 QuickSpecBegin(ContainerSpec)
 
+//describe(@"Container test222", ^{
+//    context(@"NSCache test111", ^{
+//        // 往NSCache中出入空值不会crash
+//        it(@"2222222222222", ^{
+//            NSString *aa = @"11";
+//            expect(aa, @"11");
+//        });
+//    });
+//});
+
 describe(@"Container test", ^{
     context(@"NSCache test", ^{
+        // 往NSCache中出入空值不会crash
         it(@"should avoid crash by insert nil value  to NSCache", ^{
             NSCache *cache = [[NSCache alloc] init];
             id stub = nil;
@@ -18,6 +29,9 @@ describe(@"Container test", ^{
             
             expect([cache objectForKey:@"key"]).to(equal(@"val"));
             
+            // 通常情况下，这个消耗值是对象的字节大小。如果这些信息不是现成的，则我们不应该去计算它，
+            // 因为这样会使增加使用缓存的成本。如果我们没有可用的值传递，则直接传递0，
+            // 或者是使用-setObject:forKey:方法，这个方法不需要传入一个消耗值。[http://southpeak.github.io/2015/02/11/cocoa-foundation-nscache/]
             [cache setObject:@"value" forKey:@"anotherKey" cost:10];
             [cache setObject:stub forKey:@"anotherKey" cost:10];
             expect([cache objectForKey:@"anotherKey"]).to(equal(@"value"));
@@ -38,6 +52,12 @@ describe(@"Container test", ^{
             
             arr = @[@1, @2];
             clazzName = [[NSString alloc] initWithUTF8String:object_getClassName(arr)];
+            expect(clazzName).to(equal(@"__NSArrayI"));
+            expect(arr[10]).to(beNil());
+            
+            arr = @[@"11", @"22"];
+            clazzName = [[NSString alloc] initWithUTF8String:object_getClassName(arr)];
+            NSLog(@"clazzName = %@", clazzName);
             expect(clazzName).to(equal(@"__NSArrayI"));
             expect(arr[10]).to(beNil());
         });

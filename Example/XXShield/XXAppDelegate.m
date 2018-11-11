@@ -8,6 +8,7 @@
 
 #import "XXAppDelegate.h"
 @import ObjectiveC.runtime;
+#import <XXShield/XXShield.h>
 
 @implementation XXAppDelegate
 
@@ -35,6 +36,17 @@
 //    "__NSArray0",
 //    "__NSSingleObjectArrayI",
 //    NSMutableArray
+    [XXShieldSDK registerStabilityWithAbility:EXXShieldTypeContainer];
+    NSArray *aa = @[@"111"];
+    NSLog(@"aa[3] = %@", aa[3]);
+    
+    NSString *nilValue = nil;
+    NSDictionary *bb = @{
+                         @"aaa": nilValue,
+                         @"bbb": @0,
+                         @"ccc": @"cccV"
+                         };
+    NSLog(@"bb = %@", bb);
     return YES;
 }
 
